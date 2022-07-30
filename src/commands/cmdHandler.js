@@ -1,11 +1,11 @@
-const { MessageEmbed, Collection} = require('discord.js');
+const { MessageEmbed, Collection } = require('discord.js');
 
 require('dotenv').config();
 const config = require('../config.json');
 const fs = require("fs");
 const path = require("path");
 
-const commandPath = './commands';
+const commandPath = './src/commands';
 
 module.exports = async (client) => {
   const commands = new Collection();
@@ -13,27 +13,27 @@ module.exports = async (client) => {
 
   global.multiReact = async (msg, ...reactions) => {
     for (let i of reactions) {
-        if (typeof i !== 'object') {
-          for (let reaction of i) {
-            if (reaction !== " ") {
-              try {
-                await msg.react(reaction);
-              } catch(A) {}
-              
+      if (typeof i !== 'object') {
+        for (let reaction of i) {
+          if (reaction !== " ") {
+            try {
+              await msg.react(reaction);
+            } catch (A) { }
 
-            }
+
           }
-        } else {
-            await msg.react(i);
         }
+      } else {
+        await msg.react(i);
+      }
     }
   }
 
 
-  fs.readdirSync(path.join(process.cwd(), commandPath, "/normal")).filter(file => file.endsWith(".js")).forEach(file => {
-      let pull = require(path.join(process.cwd(), commandPath, "/normal", file));
-      const name = file.split('/').pop().split('.')[0];
-      commands.set(name, pull);
+  fs.readdirSync(path.join(process.cwd(), commandPath, "./normal")).filter(file => file.endsWith(".js")).forEach(file => {
+    let pull = require(path.join(process.cwd(), commandPath, "./normal", file));
+    const name = file.split('/').pop().split('.')[0];
+    commands.set(name, pull);
   });
 
 
@@ -58,19 +58,19 @@ module.exports = async (client) => {
       [["download avdan os", "avdan os iso"], {
         embeds: [
           new MessageEmbed()
-              .setDescription("We have not finished developing AvdanOS, so there is not a download yet.\nWe are currently working on the **window manager**.\nSubscribe to [our Youtube channel](https://www.youtube.com/channel/UCHLCBj83J7bR82HwjhCJusA) for updates on our development.")
-              .setColor("BLUE")
+            .setDescription("We have not finished developing AvdanOS, so there is not a download yet.\nWe are currently working on the **window manager**.\nSubscribe to [our Youtube channel](https://www.youtube.com/channel/UCHLCBj83J7bR82HwjhCJusA) for updates on our development.")
+            .setColor("BLUE")
         ]
       }
       ],
       [
         ["how do i become developer", "how do i become a developer"], {
-        embeds: [
-          new MessageEmbed()
+          embeds: [
+            new MessageEmbed()
               .setDescription("To join the team please go to #join-the-team, you must meet the requirements specified there.")
               .setColor("BLUE")
-        ]
-      }
+          ]
+        }
       ]
     ]
 
@@ -87,18 +87,18 @@ module.exports = async (client) => {
 
         // Loop through the possible events, make them lowercase and check if the message contains it (if it does, execute the event)
         for (const [key, value] of extCommands) {
-            for (const i of key) {
-                if (message.content.toLowerCase().includes(i)) {
-                if (typeof value === 'function') value();
-                  else if (typeof value === 'object' || typeof value === 'string') {
-                    if (value.embeds) {
-                      for (const embed of value.embeds) {
-                        message.reply({embeds: [embed]})
-                      }
-                    }
+          for (const i of key) {
+            if (message.content.toLowerCase().includes(i)) {
+              if (typeof value === 'function') value();
+              else if (typeof value === 'object' || typeof value === 'string') {
+                if (value.embeds) {
+                  for (const embed of value.embeds) {
+                    message.reply({ embeds: [embed] })
                   }
                 }
+              }
             }
+          }
         }
       } else {
         const args = message.content.slice(process.env.PREFIX.length).trim().split(/ +/);
@@ -111,10 +111,10 @@ module.exports = async (client) => {
           console.error(error);
 
           const embed = new MessageEmbed()
-              .setTitle('An error occurred while executing that command.')
-              .setColor('RED');
+            .setTitle('An error occurred while executing that command.')
+            .setColor('RED');
 
-          message.channel.send({embeds: [embed]});
+          message.channel.send({ embeds: [embed] });
         }
       }
     } else return;
@@ -138,9 +138,9 @@ module.exports = async (client) => {
         } catch (error) {
           console.error(error);
           const embed = new MessageEmbed()
-              .setTitle('An error occurred while executing that command.')
-              .setColor('RED')
-          interaction.reply({embeds: [embed], ephemeral: true});
+            .setTitle('An error occurred while executing that command.')
+            .setColor('RED')
+          interaction.reply({ embeds: [embed], ephemeral: true });
         }
       }
     });
